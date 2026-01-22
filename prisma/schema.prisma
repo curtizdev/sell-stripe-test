@@ -1,0 +1,90 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = env("DATABASE_URL")
+}
+
+// Merchant entity - represents a business customer
+model Merchant {
+  id                     String         @id @default(uuid())
+  name                   String
+  email                  String         @unique
+  stripeCustomerId       String?        @unique
+  defaultPaymentMethodId String?
+  createdAt              DateTime       @default(now())
+  updatedAt              DateTime       @updatedAt
+
+  subscriptions Subscription[]
+  orders        Order[]
+
+  @@map("merchants")
+}
+
+// Subscription status enum values stored as strings
+// active | past_due | canceled | unpaid | incomplete | trialing
+model Subscription {
+  id                   String    @id @default(uuid())
+  merchantId           String
+  stripeSubscriptionId String    @unique
+  stripePriceId        String
+  status               String    @default("incomplete") // active, past_due, canceled, unpaid, incomplete, trialing
+  currentPeriodStart   DateTime?
+  currentPeriodEnd     DateTime?
+  canceledAt           DateTime?
+  cancelAtPeriodEnd    Boolean   @default(false)
+  createdAt            DateTime  @default(now())
+  updatedAt            DateTime  @updatedAt
+
+  merchant Merchant @relation(fields: [merchantId], references: [id], onDelete: Cascade)
+
+  @@index([merchantId])
+  @@index([stripeSubscriptionId])
+  @@map("subscriptions")
+}
+
+// Order entity - linked to billing lifecycle
+model Order {
+  id              String    @id @default(uuid())
+  merchantId      String
+  amount          Int // Amount in cents
+  currency        String    @default("usd")
+  status          String    @default("pending") // pending, paid, payment_failed, refunded, canceled
+  stripeInvoiceId String?   @unique
+  paidAt          DateTime?
+  failedAt        DateTime?
+  failureReason   String?
+  createdAt       DateTime  @default(now())
+  updatedAt       DateTime  @updatedAt
+
+  merchant Merchant @relation(fields: [merchantId], references: [id], onDelete: Cascade)
+
+  @@index([merchantId])
+  @@index([status])
+  @@index([stripeInvoiceId])
+  @@map("orders")
+}
+
+// Stripe webhook events - for idempotency and audit trail
+model StripeEvent {
+  id              String    @id @default(uuid())
+  stripeEventId   String    @unique
+  eventType       String
+  payload         String // JSON stringified payload
+  processed       Boolean   @default(false)
+  processedAt     DateTime?
+  processingError String?
+  retryCount      Int       @default(0)
+  createdAt       DateTime  @default(now())
+  updatedAt       DateTime  @updatedAt
+
+  @@index([stripeEventId])
+  @@index([eventType])
+  @@index([processed])
+  @@map("stripe_events")
+}
