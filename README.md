@@ -253,6 +253,14 @@ Copy the webhook signing secret from the CLI output to your `.env` file.
 | `refunded`       | Order refunded                  |
 | `canceled`       | Order canceled                  |
 
+## API Documentation
+
+This project uses **Swagger** for interactive API documentation.
+
+After starting the server, visit: [http://localhost:3000/api](http://localhost:3000/api)
+
+You can view and test all available endpoints, see request/response schemas, and try out the API directly from the browser.
+
 ## API Endpoints
 
 ### Merchants
