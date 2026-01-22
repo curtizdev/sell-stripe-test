@@ -83,7 +83,7 @@ Configure your Stripe API keys in the environment variables.
       .swagger-ui .btn.execute { background-color: #635BFF; border-color: #635BFF; }
       .swagger-ui .btn.execute:hover { background-color: #4B45C6; border-color: #4B45C6; }
       .swagger-ui section.models { border-color: #635BFF; }
-      .swagger-ui section.models .model-box { background: #fafafa; }
+      .swagger-ui section.models .model-box { border-color:#635BFF; background: rgba(115, 197, 20, 0.26); }
     `,
       swaggerOptions: {
         persistAuthorization: true,
