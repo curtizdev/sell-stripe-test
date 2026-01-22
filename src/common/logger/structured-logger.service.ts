@@ -29,10 +29,6 @@ export class StructuredLoggerService {
       .join(' ');
   }
 
-  /**
-   * Log webhook events with structured format
-   * Example: [WEBHOOK] event=invoice.payment_succeeded invoice=inv_123 merchant=merch_987 action=subscription_activated
-   */
   webhook(context: LogContext): void {
     const formatted = this.formatContext(context);
     this.logger.log(`[WEBHOOK] ${formatted}`);

@@ -1,6 +1,3 @@
-/**
- * Queue names for the application
- */
 export const QUEUE_NAMES = {
   STRIPE_WEBHOOKS: 'stripe-webhooks',
 } as const;
@@ -22,6 +19,6 @@ export interface WebhookJobData {
   eventId: string;
   stripeEventId: string;
   eventType: string;
-  payload: string; // JSON stringified
+  payload: string;
   retryCount: number;
 }
