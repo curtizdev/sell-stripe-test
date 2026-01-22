@@ -60,12 +60,19 @@ Configure your Stripe API keys in the environment variables.
     .addServer('http://localhost:3000', 'Local Development')
     .build();
 
-  const document = SwaggerModule.createDocument(app, config);
+  const document = SwaggerModule.createDocument(
+    app as Parameters<typeof SwaggerModule.createDocument>[0],
+    config,
+  );
 
-  SwaggerModule.setup('api', app, document, {
-    customSiteTitle: 'SellAbroad Billing API Docs',
-    customfavIcon: 'https://stripe.com/favicon.ico',
-    customCss: `
+  SwaggerModule.setup(
+    'api',
+    app as Parameters<typeof SwaggerModule.setup>[1],
+    document,
+    {
+      customSiteTitle: 'SellAbroad Billing API Docs',
+      customfavIcon: 'https://stripe.com/favicon.ico',
+      customCss: `
       .swagger-ui .topbar { display: none }
       .swagger-ui .info .title { color: #635BFF; }
       .swagger-ui .info .description { font-size: 14px; }
@@ -78,17 +85,18 @@ Configure your Stripe API keys in the environment variables.
       .swagger-ui section.models { border-color: #635BFF; }
       .swagger-ui section.models .model-box { background: #fafafa; }
     `,
-    swaggerOptions: {
-      persistAuthorization: true,
-      docExpansion: 'list',
-      filter: true,
-      showRequestDuration: true,
-      syntaxHighlight: {
-        activate: true,
-        theme: 'monokai',
+      swaggerOptions: {
+        persistAuthorization: true,
+        docExpansion: 'list',
+        filter: true,
+        showRequestDuration: true,
+        syntaxHighlight: {
+          activate: true,
+          theme: 'monokai',
+        },
       },
     },
-  });
+  );
 
   const port = process.env.PORT ?? 3000;
   await app.listen(port);
